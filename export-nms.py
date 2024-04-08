@@ -219,7 +219,7 @@ def export_coreml(model, im, file, num_boxes, num_classes, labels, conf_thres, i
         export_model = CoreMLExportModel(model, img_size=opt.imgsz)
         export_model.eval() # Turn on eval mode, otherwise model is in train mode
         ts = torch.jit.trace(export_model, im, strict=False)  # TorchScript model
-        orig_model = ct.convert(ts, inputs=[ct.ImageType('image', shape=im.shape, scale=1 / 255, bias=[0, 0, 0])])
+        orig_model = ct.convert(ts, convert_to="neuralnetwork", minimum_deployment_target=ct.target.iOS14, inputs=[ct.ImageType('image', shape=im.shape, scale=1 / 255, bias=[0, 0, 0])])
 
         spec = orig_model.get_spec()
         old_box_output_name = spec.description.output[1].name
